@@ -14,17 +14,12 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    POSTGRES_SERVER: str = "localhost"
-    POSTGRES_USER: str = "postgres"
-    POSTGRES_PASSWORD: str = "postgres"
-    POSTGRES_DB: str = "supplychain"
-    POSTGRES_PORT: str = "5432"
+    DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/supplychain"
+    GROQ_API_KEY: str = ""
 
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
-        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
-        
-    GROQ_API_KEY: str = ""
+        return self.DATABASE_URL
 
     class Config:
         case_sensitive = True
