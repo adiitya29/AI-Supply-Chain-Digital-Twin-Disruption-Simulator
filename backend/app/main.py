@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api import routes
+from app.api import disruptions
 from app.db.database import engine
 from app.models import node, edge
 from app.db.database import Base
@@ -26,6 +27,7 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 app.include_router(routes.router, prefix="/api")
+app.include_router(disruptions.router, prefix="/api/disruptions")
 
 @app.get("/")
 def root():
