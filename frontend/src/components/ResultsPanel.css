@@ -1,0 +1,221 @@
+.results-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+.results-panel.disrupted {
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
+}
+
+.impact-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.impact-stat {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.impact-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent-red);
+}
+
+.impact-stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.affected-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.affected-item {
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.affected-name {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.affected-stats {
+  display: flex;
+  gap: 10px;
+}
+
+.tag {
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tag-red { background: rgba(239,68,68,0.15); color: #f87171; }
+.tag-yellow { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.tag-green { background: rgba(16,185,129,0.15); color: #34d399; }
+.tag-blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+
+.empty-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 10px;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.empty-results .big-icon {
+  font-size: 40px;
+  opacity: 0.5;
+}
+
+/* LLM recommendation block */
+.llm-block {
+  background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(6,182,212,0.06));
+  border: 1px solid rgba(59,130,246,0.25);
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+
+.llm-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  margin-bottom: 8px;
+}
+
+/* Alternatives comparison */
+.alt-item {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s;
+  animation: slideIn 0.3s ease-out;
+}
+
+.alt-item:first-child {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.04);
+}
+
+.alt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.alt-rank {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.alt-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.alt-score {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent-green);
+}
+
+.alt-metrics {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Bottleneck list */
+.bottleneck-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px;
+  gap: 8px;
+}
+
+.bottleneck-name {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.centrality-bar-bg {
+  flex: 1;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.centrality-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-yellow), var(--accent-red));
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.spof-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  background: rgba(239,68,68,0.15);
+  color: #f87171;
+  border-radius: 4px;
+  font-weight: 600;
+  white-space: nowrap;
+}
