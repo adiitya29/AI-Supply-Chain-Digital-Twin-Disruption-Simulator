@@ -37,3 +37,19 @@ export async function fetchRecommendations(payload) {
   if (!res.ok) throw new Error("Failed to fetch recommendations");
   return res.json();
 }
+
+export async function fetchScenarios() {
+  const res = await fetch(`${API_BASE}/scenarios/`);
+  if (!res.ok) throw new Error("Failed to fetch scenarios");
+  return res.json();
+}
+
+export async function saveScenario(payload) {
+  const res = await fetch(`${API_BASE}/scenarios/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error("Failed to save scenario");
+  return res.json();
+}

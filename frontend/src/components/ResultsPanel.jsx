@@ -1,40 +1,76 @@
+import { useState } from 'react';
 import './ResultsPanel.css';
 
-export default function ResultsPanel({ simulationResult, recommendations, bottlenecks, activeTab, onTabChange }) {
+export default function ResultsPanel({ simulationResult, recommendations, bottlenecks, activeTab, onTabChange, onSaveScenario }) {
+  const [saveName, setSaveName] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+
   const affected = simulationResult?.affected_nodes ?? [];
   const alts = recommendations?.ranked_alternatives ?? [];
-  const llmText = recommendations?.llm_recommendation ?? '';
   const bns = bottlenecks?.bottlenecks ?? [];
 
   const maxCentrality = bns.length ? Math.max(...bns.map(b => b.centrality_score)) : 1;
 
+  const handleSave = () => {
+    if (!saveName.trim()) return;
+    setIsSaving(true);
+    onSaveScenario(saveName).then(() => {
+      setSaveName('');
+      setIsSaving(false);
+    });
+  };
+
   return (
     <div className={`results-panel ${affected.length > 0 ? 'disrupted' : ''}`}>
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: '6px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
-        {['impact', 'recovery', 'bottlenecks'].map(tab => (
-          <button
-            key={tab}
-            id={`tab-${tab}`}
-            onClick={() => onTabChange(tab)}
-            style={{
-              padding: '6px 14px',
-              borderRadius: '6px',
-              border: 'none',
-              cursor: 'pointer',
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '12px',
-              fontWeight: '600',
-              background: activeTab === tab ? 'var(--accent-blue)' : 'var(--bg-input)',
-              color: activeTab === tab ? '#fff' : 'var(--text-secondary)',
-              transition: 'all 0.2s',
-            }}
-          >
-            {tab === 'impact' && '💥 Impact'}
-            {tab === 'recovery' && '🔄 Recovery'}
-            {tab === 'bottlenecks' && '⚠️ Bottlenecks'}
-          </button>
-        ))}
+      {/* Tabs and Save action */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
+        
+        {/* Save Scenario UI (only when impact is active) */}
+        {simulationResult && (
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <input 
+              className="form-input" 
+              placeholder="Name this scenario to save..." 
+              value={saveName}
+              onChange={e => setSaveName(e.target.value)}
+              style={{ flex: 1, padding: '6px 10px', fontSize: '11px' }}
+            />
+            <button 
+              className="btn btn-primary" 
+              onClick={handleSave} 
+              disabled={isSaving || !saveName.trim()}
+              style={{ width: 'auto', padding: '6px 12px' }}
+            >
+              {isSaving ? '⏳' : '💾 Save'}
+            </button>
+          </div>
+        )}
+
+        <div style={{ display: 'flex', gap: '6px' }}>
+          {['impact', 'recovery', 'bottlenecks'].map(tab => (
+            <button
+              key={tab}
+              id={`tab-${tab}`}
+              onClick={() => onTabChange(tab)}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '6px',
+                border: 'none',
+                cursor: 'pointer',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '12px',
+                fontWeight: '600',
+                background: activeTab === tab ? 'var(--accent-blue)' : 'var(--bg-input)',
+                color: activeTab === tab ? '#fff' : 'var(--text-secondary)',
+                transition: 'all 0.2s',
+              }}
+            >
+              {tab === 'impact' && '💥 Impact'}
+              {tab === 'recovery' && '🔄 Recovery'}
+              {tab === 'bottlenecks' && '⚠️ Bottlenecks'}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* ---- IMPACT TAB ---- */}

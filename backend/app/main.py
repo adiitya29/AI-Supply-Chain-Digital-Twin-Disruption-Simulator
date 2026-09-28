@@ -5,8 +5,9 @@ from app.api import routes
 from app.api import disruptions
 from app.api import analysis
 from app.api import recommendations
+from app.api import scenarios
 from app.db.database import engine
-from app.models import node, edge
+from app.models import node, edge, scenario
 from app.db.database import Base
 
 # Create tables in the database
@@ -32,6 +33,7 @@ app.include_router(routes.router, prefix="/api")
 app.include_router(disruptions.router, prefix="/api/disruptions")
 app.include_router(analysis.router, prefix="/api/analysis")
 app.include_router(recommendations.router, prefix="/api/recommendations")
+app.include_router(scenarios.router, prefix="/api/scenarios")
 
 @app.get("/")
 def root():

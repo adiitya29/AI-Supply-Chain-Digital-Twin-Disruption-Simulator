@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Header from './components/Header';
 import GraphView from './components/GraphView';
 import ScenarioBuilder from './components/ScenarioBuilder';
+import ScenarioHistory from './components/ScenarioHistory';
 import ResultsPanel from './components/ResultsPanel';
 import {
   fetchNodes,
@@ -9,6 +10,7 @@ import {
   fetchBottlenecks,
   simulateDisruption,
   fetchRecommendations,
+  saveScenario,
 } from './api';
 import './App.css';
 
@@ -22,6 +24,12 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('impact');
   const [error, setError] = useState(null);
+  
+  // To trigger re-fetch of history when a new one is saved
+  const [historyRefresh, setHistoryRefresh] = useState(0);
+  
+  // Keep track of the last simulated payload so we can save it
+  const [lastPayload, setLastPayload] = useState(null);
 
   // Load graph data and bottlenecks on mount
   useEffect(() => {
@@ -53,17 +61,49 @@ export default function App() {
       setSimulationResult(simResult);
       setRecommendations(recResult);
       setActiveTab('impact');
+      setLastPayload(payload);
     } catch (err) {
       setError('Simulation failed. Check the backend console for errors.');
     } finally {
       setIsLoading(false);
     }
   }, []);
+  
+  const handleSaveScenario = async (name) => {
+    if (!lastPayload || !simulationResult) return;
+    try {
+      await saveScenario({
+        name,
+        disruption_type: lastPayload.disruption_type,
+        target_node_id: lastPayload.target_id,
+        magnitude: lastPayload.magnitude,
+        duration: lastPayload.duration,
+        impact_summary: simulationResult,
+      });
+      setHistoryRefresh(prev => prev + 1);
+    } catch (err) {
+      setError('Failed to save scenario.');
+    }
+  };
+  
+  const handleLoadScenario = (savedScenario) => {
+    setSimulationResult(savedScenario.impact_summary);
+    setRecommendations(null); // Clear old recs
+    setSelectedNodeId(savedScenario.target_node_id);
+    setActiveTab('impact');
+    // Also re-fetch recommendations for the loaded scenario
+    fetchRecommendations({
+        disrupted_node_id: savedScenario.target_node_id,
+        magnitude: savedScenario.magnitude,
+        duration: savedScenario.duration,
+    }).then(setRecommendations).catch(console.error);
+  };
 
   const handleReset = useCallback(() => {
     setSimulationResult(null);
     setRecommendations(null);
     setSelectedNodeId(null);
+    setLastPayload(null);
     setActiveTab('impact');
   }, []);
 
@@ -83,14 +123,18 @@ export default function App() {
       )}
 
       <div className="app-body">
-        {/* Left sidebar — Scenario builder */}
-        <aside className="sidebar">
+        {/* Left sidebar — Scenario builder & History */}
+        <aside className="sidebar" style={{ display: 'flex', flexDirection: 'column' }}>
           <ScenarioBuilder
             nodes={nodes}
             selectedNodeId={selectedNodeId}
             onSimulate={handleSimulate}
             onReset={handleReset}
             isLoading={isLoading}
+          />
+          <ScenarioHistory 
+            refreshTrigger={historyRefresh} 
+            onLoadScenario={handleLoadScenario} 
           />
         </aside>
 
@@ -114,6 +158,7 @@ export default function App() {
             bottlenecks={bottlenecks}
             activeTab={activeTab}
             onTabChange={setActiveTab}
+            onSaveScenario={handleSaveScenario}
           />
         </aside>
       </div>
