@@ -18,4 +18,3 @@ class RecommendationRequest(BaseModel):
 
 class RecommendationResponse(BaseModel):
     ranked_alternatives: List[AlternativeNode]
-    llm_recommendation: str

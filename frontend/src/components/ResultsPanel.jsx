@@ -99,17 +99,10 @@ export default function ResultsPanel({ simulationResult, recommendations, bottle
             <div className="empty-results">
               <div className="big-icon">🔄</div>
               <div>No recovery options yet.</div>
-              <div style={{ fontSize: '12px' }}>Simulate a disruption first to see AI-ranked recovery alternatives.</div>
+              <div style={{ fontSize: '12px' }}>Simulate a disruption first to see ranked recovery alternatives.</div>
             </div>
           ) : (
             <>
-              {llmText && (
-                <div className="llm-block">
-                  <div className="llm-label">🤖 AI Recommendation</div>
-                  {llmText}
-                </div>
-              )}
-
               <div className="panel-title" style={{ fontSize: '11px' }}>
                 <span className="icon">🏆</span>
                 Ranked Alternatives
